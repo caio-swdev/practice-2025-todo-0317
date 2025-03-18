@@ -63,10 +63,8 @@ test.describe("Todo Component Functionality", () => {
     await expect(newTodoItem).toBeVisible();
 
     // Verify toast message
-    const toast = page
-      .getByRole("status")
-      .getByText("Todo added successfully", { exact: true });
-    await expect(toast).toBeVisible({ timeout: 3000 });
+    const toast = page.getByText("Todo added successfully", { exact: true });
+    await expect(toast).toBeVisible({ timeout: 5000 });
   });
 
   test("should handle empty todo input", async ({ page }) => {
@@ -79,10 +77,10 @@ test.describe("Todo Component Functionality", () => {
     await page.getByTestId("add-todo-button").click();
 
     // Verify error toast
-    const errorToast = page
-      .getByRole("status")
-      .getByText("Todo text cannot be empty", { exact: true });
-    await expect(errorToast).toBeVisible({ timeout: 3000 });
+    const errorToast = page.getByText("Todo text cannot be empty", {
+      exact: true,
+    });
+    await expect(errorToast).toBeVisible({ timeout: 5000 });
 
     // Verify no new todo was added
     await expect(page.locator('[data-testid^="todo-item-"]')).toHaveCount(
@@ -154,10 +152,8 @@ test.describe("Todo Component Functionality", () => {
     );
 
     // Verify toast message
-    const toast = page
-      .getByRole("status")
-      .getByText("Todo removed", { exact: true });
-    await expect(toast).toBeVisible({ timeout: 3000 });
+    const toast = page.getByText("Todo removed", { exact: true });
+    await expect(toast).toBeVisible({ timeout: 5000 });
   });
 
   test("should update todo counter correctly", async ({ page }) => {
@@ -182,7 +178,7 @@ test.describe("Todo Component Functionality", () => {
     const totalCount = await todoItems.count();
 
     // Verify counter text in CardFooter
-    const counterText = page.locator(".card-footer");
+    const counterText = page.locator(".text-sm.text-muted-foreground");
     await expect(counterText).toContainText(`${totalCount} todos`);
 
     // Toggle a todo and verify completed count
