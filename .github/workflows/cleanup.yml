@@ -1,0 +1,34 @@
+name: Cleanup GHCR
+
+on:
+  schedule:
+    - cron: "0 0 * * 0" # Run weekly at midnight on Sunday
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old container images
+        uses: snok/container-retention-policy@v2
+        with:
+          image-names: ${{ github.repository }}
+          cut-off: 7 days ago UTC
+          account-type: personal
+          keep-at-least: 5
+          skip-tags: latest
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check GHCR Storage
+        run: |
+          echo "Checking GHCR storage usage..."
+          STORAGE=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/user/packages?package_type=container" | \
+            jq '[.[] | select(.name=="${{ github.repository }}") | .size_bytes] | add')
+
+          STORAGE_MB=$((STORAGE/1024/1024))
+          echo "Current storage usage: ${STORAGE_MB}MB of 500MB limit"
+
+          if [ ${STORAGE_MB} -gt 400 ]; then
+            echo "::warning::GHCR storage is above 400MB (${STORAGE_MB}MB/500MB)"
+          fi
