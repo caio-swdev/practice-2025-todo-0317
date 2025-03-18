@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
 
 jobs:
   build:
@@ -50,10 +50,10 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: ${{ github.event_name != 'pull_request' }} # Only push on main branch
+          push: ${{ github.event_name != 'pull_request' }} # Only push on master branch
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.sha }}
-            ${{ github.ref == 'refs/heads/main' && 'ghcr.io/${{ github.repository }}:latest' || '' }}
+            ${{ github.ref == 'refs/heads/master' && 'ghcr.io/${{ github.repository }}:latest' || '' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
