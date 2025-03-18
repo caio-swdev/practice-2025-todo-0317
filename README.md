@@ -1,5 +1,7 @@
 # Next.js Todo App
 
+[![CI](https://github.com/caio-swdev/practice-2025-todo-0317/actions/workflows/ci.yml/badge.svg)](https://github.com/caio-swdev/practice-2025-todo-0317/actions/workflows/ci.yml)
+
 A modern Todo application built with Next.js and a comprehensive tech stack.
 
 ## Tech Stack

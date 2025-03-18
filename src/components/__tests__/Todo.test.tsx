@@ -1,72 +1,88 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { Todo } from '../Todo';
+/**
+ * @jest-environment jsdom
+ */
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { Todo } from "../Todo";
+import { vi } from "vitest";
+import "@testing-library/jest-dom";
 
 // Mock the sonner toast
-jest.mock('sonner', () => ({
+vi.mock("sonner", () => ({
   toast: {
-    error: jest.fn(),
-    success: jest.fn()
-  }
+    error: vi.fn(),
+    success: vi.fn(),
+  },
 }));
 
-describe('Todo Component', () => {
+describe("Todo Component", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  test('renders todo component with empty state', () => {
+  test("renders todo component with empty state", () => {
     render(<Todo />);
 
-    expect(screen.getByText('Todo List')).toBeInTheDocument();
-    expect(screen.getByText('No todos yet. Add one above!')).toBeInTheDocument();
-    expect(screen.getByTestId('todo-input')).toBeInTheDocument();
-    expect(screen.getByTestId('add-todo-button')).toBeInTheDocument();
+    expect(screen.getByText("Todo List")).toBeInTheDocument();
+    expect(
+      screen.getByText("No todos yet. Add one above!")
+    ).toBeInTheDocument();
+    expect(screen.getByTestId("todo-input")).toBeInTheDocument();
+    expect(screen.getByTestId("add-todo-button")).toBeInTheDocument();
   });
 
-  test('adds a new todo when button is clicked', () => {
+  test("adds a new todo when button is clicked", () => {
     render(<Todo />);
 
-    const input = screen.getByTestId('todo-input');
-    const addButton = screen.getByTestId('add-todo-button');
+    const input = screen.getByTestId("todo-input");
+    const addButton = screen.getByTestId("add-todo-button");
 
-    fireEvent.change(input, { target: { value: 'New Todo Item' } });
+    fireEvent.change(input, { target: { value: "New Todo Item" } });
     fireEvent.click(addButton);
 
-    expect(screen.getByText('New Todo Item')).toBeInTheDocument();
-    expect(screen.queryByText('No todos yet. Add one above!')).not.toBeInTheDocument();
+    expect(screen.getByText("New Todo Item")).toBeInTheDocument();
+    expect(
+      screen.queryByText("No todos yet. Add one above!")
+    ).not.toBeInTheDocument();
   });
 
-  test('adds a new todo when Enter key is pressed', () => {
+  test("adds a new todo when Enter key is pressed", () => {
     render(<Todo />);
 
-    const input = screen.getByTestId('todo-input');
+    const input = screen.getByTestId("todo-input");
 
-    fireEvent.change(input, { target: { value: 'Todo with Enter' } });
-    fireEvent.keyDown(input, { key: 'Enter' });
+    fireEvent.change(input, { target: { value: "Todo with Enter" } });
+    fireEvent.keyDown(input, { key: "Enter" });
 
-    expect(screen.getByText('Todo with Enter')).toBeInTheDocument();
+    expect(screen.getByText("Todo with Enter")).toBeInTheDocument();
   });
 
-  test('marks todo as completed when toggled', () => {
-    render(<Todo initialTodos={[{ id: '1', text: 'Test Todo', completed: false }]} />);
+  test("marks todo as completed when toggled", () => {
+    render(
+      <Todo initialTodos={[{ id: "1", text: "Test Todo", completed: false }]} />
+    );
 
-    const toggleButton = screen.getByTestId('toggle-todo-1');
+    const toggleButton = screen.getByTestId("toggle-todo-1");
     fireEvent.click(toggleButton);
 
     // The todo text should have the line-through style when completed
-    expect(screen.getByText('Test Todo').parentElement?.parentElement).toHaveClass('line-through');
+    const todoText = screen.getByText("Test Todo");
+    expect(todoText).toHaveClass("line-through text-muted-foreground");
   });
 
-  test('deletes a todo when delete button is clicked', () => {
-    render(<Todo initialTodos={[{ id: '1', text: 'Test Todo', completed: false }]} />);
+  test("deletes a todo when delete button is clicked", () => {
+    render(
+      <Todo initialTodos={[{ id: "1", text: "Test Todo", completed: false }]} />
+    );
 
-    expect(screen.getByText('Test Todo')).toBeInTheDocument();
+    expect(screen.getByText("Test Todo")).toBeInTheDocument();
 
-    const deleteButton = screen.getByTestId('delete-todo-1');
+    const deleteButton = screen.getByTestId("delete-todo-1");
     fireEvent.click(deleteButton);
 
-    expect(screen.queryByText('Test Todo')).not.toBeInTheDocument();
-    expect(screen.getByText('No todos yet. Add one above!')).toBeInTheDocument();
+    expect(screen.queryByText("Test Todo")).not.toBeInTheDocument();
+    expect(
+      screen.getByText("No todos yet. Add one above!")
+    ).toBeInTheDocument();
   });
-}); 
+});
