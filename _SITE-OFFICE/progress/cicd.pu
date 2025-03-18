@@ -1,0 +1,63 @@
+@startuml AWS Free Tier Todo App Architecture
+
+!define AWSCOLOR #FF9900
+!define GITHUBCOLOR #24292E
+!define MONITORCOLOR #00A9E0
+
+skinparam component {
+    BackgroundColor<<AWS>> AWSCOLOR
+    BorderColor #232F3E
+    FontColor<<AWS>> white
+}
+
+skinparam component {
+    BackgroundColor<<GitHub>> GITHUBCOLOR
+    BorderColor #232F3E
+    FontColor<<GitHub>> white
+}
+
+skinparam component {
+    BackgroundColor<<Monitor>> MONITORCOLOR
+    BorderColor #232F3E
+    FontColor<<Monitor>> white
+}
+
+package "Local Development" {
+    [Developer] as dev
+    [GitHub Repository] as repo <<GitHub>>
+    dev --> repo : Git Push
+}
+
+package "CI/CD (All Free)" {
+    [GitHub Actions] as actions <<GitHub>>
+    [Tests & Lint] as tests
+    [Build] as build
+    [GitHub Container Registry\n(GHCR)] as ghcr <<GitHub>>
+    
+    repo --> actions : Triggers
+    actions --> tests : Run Tests
+    actions --> build : Build Container
+    build --> ghcr : Push Image
+}
+
+package "AWS Free Tier" {
+    package "Single VPS (EC2 t2.micro)" {
+        [Docker on EC2] as ec2 <<AWS>>
+        [Todo App Container] as container
+        [Public IP/DNS] as public
+        
+        ec2 <-- ghcr : Pull Image
+        ec2 --> container : Run Container
+        container --> public : Serve on\nPort 80/443
+    }
+}
+
+package "Monitoring (Free Tiers)" {
+    [New Relic] as newrelic <<Monitor>>
+    container --> newrelic : App Metrics
+}
+
+[Users] as users
+public --> users : HTTPS
+
+@enduml
