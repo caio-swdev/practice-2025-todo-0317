@@ -43,3 +43,8 @@ next-env.d.ts
 
 # Storybook
 storybook-static/
+
+# Project specific
+_SDLC
+_SITE
+_AI-SPECS
