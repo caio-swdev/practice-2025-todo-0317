@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [master, feat/add-docker-labels]
+    branches: [master]
   pull_request:
     branches: [master]
 
@@ -61,7 +61,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: true # Always push for testing
+          push: ${{ github.event_name != 'pull_request' }} # Only push on master branch
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.sha }}
             ${{ github.ref == 'refs/heads/master' && format('ghcr.io/{0}:latest', github.repository) || '' }}
