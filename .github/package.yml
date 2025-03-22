@@ -1,0 +1,7 @@
+permissions:
+  packages: write
+  contents: read
+
+package:
+  type: container
+  visibility: public
