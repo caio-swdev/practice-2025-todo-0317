@@ -17,12 +17,12 @@ jobs:
           account-type: personal
           keep-at-least: 5
           skip-tags: latest
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CR_PAT }}
 
       - name: Check GHCR Storage
         run: |
           echo "Checking GHCR storage usage..."
-          STORAGE=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          STORAGE=$(curl -s -H "Authorization: Bearer ${{ secrets.CR_PAT }}" \
             "https://api.github.com/user/packages?package_type=container" | \
             jq '[.[] | select(.name=="${{ github.repository }}") | .size_bytes] | add')
 

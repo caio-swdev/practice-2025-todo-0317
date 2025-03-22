@@ -1,0 +1,103 @@
+@startuml AWS Free Tier Todo App Architecture
+
+!define AWSCOLOR #FF9900
+!define GITHUBCOLOR #24292E
+!define MONITORCOLOR #00A9E0
+!define COMPLETEDCOLOR #00FF00
+
+skinparam component {
+    BackgroundColor<<AWS>> AWSCOLOR
+    BorderColor #232F3E
+    FontColor<<AWS>> white
+}
+
+skinparam component {
+    BackgroundColor<<GitHub>> GITHUBCOLOR
+    BorderColor #232F3E
+    FontColor<<GitHub>> white
+}
+
+skinparam component {
+    BackgroundColor<<Monitor>> MONITORCOLOR
+    BorderColor #232F3E
+    FontColor<<Monitor>> white
+}
+
+skinparam component {
+    BackgroundColor<<Completed>> COMPLETEDCOLOR
+    BorderColor #232F3E
+    FontColor black
+}
+
+package "Local Development" {
+    [Developer] as dev
+    [GitHub Repository] as repo <<GitHub>>
+    dev --> repo : Git Push
+}
+
+note bottom of dev
+  ✓ Local development setup
+  ✓ Git workflow
+endnote
+
+package "CI/CD (All Free)" {
+    [GitHub Actions] as actions <<GitHub>>
+    [Tests & Lint] as tests <<Completed>>
+    [Build] as build <<Completed>>
+    [GitHub Container Registry\n(GHCR)] as ghcr <<GitHub>>
+    
+    repo --> actions : Triggers
+    actions --> tests : Run Tests
+    actions --> build : Build Container
+    build --> ghcr : Push Image
+}
+
+note bottom of actions
+  ✓ GitHub Actions workflow
+  ✓ Tests & Lint passing
+  ✓ Container build
+  ✓ GHCR push/pull
+endnote
+
+package "AWS Free Tier" {
+    package "Single VPS (EC2 t2.micro)" {
+        [Docker on EC2] as ec2 <<AWS>>
+        [Todo App Container] as container
+        [Public IP/DNS] as public
+        
+        ec2 <-- ghcr : Pull Image
+        ec2 --> container : Run Container
+        container --> public : Serve on\nPort 80/443
+    }
+}
+
+note bottom of ec2
+  TODO:
+  - EC2 instance setup
+  - Docker installation
+  - Container deployment
+  - SSL/TLS setup
+endnote
+
+package "Monitoring (Free Tiers)" {
+    [New Relic] as newrelic <<Monitor>>
+    container --> newrelic : App Metrics
+}
+
+note bottom of newrelic
+  TODO:
+  - Setup New Relic account
+  - Configure metrics
+  - Setup alerts
+endnote
+
+[Users] as users
+public --> users : HTTPS
+
+legend right
+  ✓ = Completed
+  □ = In Progress
+  ⚠ = Needs Attention
+endlegend
+
+@enduml

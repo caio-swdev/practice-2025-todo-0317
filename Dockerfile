@@ -1,5 +1,10 @@
 # Build stage
 FROM node:20-alpine AS builder
+<<<<<<< HEAD
+LABEL org.opencontainers.image.source=https://github.com/caio-swdev/practice-2025-todo-0317
+LABEL org.opencontainers.image.description="Todo App Container"
+=======
+>>>>>>> origin/master
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
