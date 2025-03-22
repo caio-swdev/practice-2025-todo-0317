@@ -1,25 +1,25 @@
-# Todo App Container Image
+# Todo App Container
 
-This package contains the container image for the Todo application.
+This container image contains the Todo application built with Next.js.
 
 ## Usage
 
-To pull the latest version:
-
 ```bash
+# Pull the latest image
 docker pull ghcr.io/caio-swdev/practice-2025-todo-0317:latest
-```
 
-To pull a specific version:
-
-```bash
-docker pull ghcr.io/caio-swdev/practice-2025-todo-0317:<commit-sha>
+# Run the container
+docker run -p 3000:3000 ghcr.io/caio-swdev/practice-2025-todo-0317:latest
 ```
 
 ## Tags
 
-- `latest`: The most recent version from the master branch
-- `<commit-sha>`: Specific version tied to a Git commit
+- `latest`: The most recent build from the master branch
+- `<commit-sha>`: Specific version tied to a commit
+
+## Environment Variables
+
+- `NEXT_PUBLIC_APP_VERSION`: The version/commit SHA of the application
 
 ## Security
 
@@ -28,7 +28,3 @@ This image includes:
 - Provenance attestation
 - Software Bill of Materials (SBOM)
 - Container signing
-
-## Environment Variables
-
-- `NEXT_PUBLIC_APP_VERSION`: The version of the application (set automatically)
